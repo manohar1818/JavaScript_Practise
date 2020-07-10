@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {
+  margin: 0;
+  min-width: 250px;
+}
+
+/* Include the padding and border in an element's total width and height */
+* {
+  box-sizing: border-box;
+}
+
+/* Remove margins and padding from the list */
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+/* Style the list items */
+ul li {
+  cursor: pointer;
+  position: relative;
+  padding: 12px 8px 12px 40px;
+  list-style-type: none;
+  background: #eee;
+  font-size: 18px;
+  transition: 0.2s;
+  
+  /* make the list items unselectable */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Set all odd list items to a different color (zebra-stripes) */
+ul li:nth-child(odd) {
+  background: #f9f9f9;
+}
+
+/* Darker background-color on hover */
+ul li:hover {
+  background: #ddd;
+}
+
+/* When clicked on, add a background color and strike out text */
+ul li.checked {
+  background: #888;
+  color: #fff;
+  text-decoration: line-through;
+}
+
+/* Add a "checked" mark when clicked on */
+ul li.checked::before {
+  content: '';
+  position: absolute;
+  border-color: #fff;
+  border-style: solid;
+  border-width: 0 2px 2px 0;
+  top: 10px;
+  left: 16px;
+  transform: rotate(45deg);
+  height: 15px;
+  width: 7px;
+}
+
+/* Style the close button */
+.close {
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 12px 16px 12px 16px;
+}
+
+.close:hover {
+  background-color: #f44336;
+  color: white;
+}
+
+/* Style the header */
+.header {
+  background-color: #fcd703;
+  padding: 30px 40px;
+  color: white;
+  text-align: center;
+}
+
+/* Clear floats after the header */
+.header:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Style the input */
+input {
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  width: 55%;
+  padding: 10px;
+  
+  float: left;
+  font-size: 16px;
+}
+
+/* Style the "Add" button */
+.addBtn {
+color: #fff !important;
+text-transform: uppercase;
+width: 15%;
+text-decoration: none;
+background: #60a3bc;
+padding: 20px;
+border-radius: 50px;
+display: inline-block;
+border: none;
+transition: all 0.4s ease 0s;
+}
+
+.addBtn:hover {
+  text-shadow: 0px 0px 6px rgba(255, 255, 255, 1);
+-webkit-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
+-moz-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
+transition: all 0.4s ease 0s;
+}
+</style>
+</head>
+<body>
+
+<div id="myDIV" class="header">
+  <h2 style="margin:5px">Manohar's To Do List</h2>
+  <input type="text" id="myInput" placeholder="Title...">
+
+<input type="datetime-local" id="mydate">
+
+  <span onclick="newElement()" class="addBtn">+ Add</span>
+</div>
+
+<ul id="myUL">
+  <li >2025-01-01T12:30 &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Morning Yoga</li>
+  <li >2020-05-12T11:20 &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  Standup</li>
+  <li >2020-02-03T12:30 &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Mentor meet</li>
+  <li >2020-05-14T11:20 &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  workshop</li>
+  <li >2025-01-06T12:30 &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Checkpoint</li>
+  <li >2020-07-12T11:20 &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  call with friend</li>
+</ul>
+
+<script>
+// Create a "close" button and append it to each list item
+var myNodelist = document.getElementsByTagName("li");
+//console.log(myNodelist);
+//console.log(myNodelist.length);
+//console.log(v.substring(0,17));
+//console.log(v);
+var i;
+for (i = 0; i < myNodelist.length; i++) {
+  var span = document.createElement("SPAN");
+  var txt = document.createTextNode("\u00D7");
+  span.className = "close";
+  span.appendChild(txt);
+  myNodelist[i].appendChild(span);
+
+
+  var v = myNodelist[i].innerHTML.substring(0,17);
+var datee = new Date();
+//2020-06-07T00:00 
+datee.setFullYear(v.substring(0,4));
+datee.setMonth(v.substring(5,7));
+datee.setDate(v.substring(8,10));
+datee.setHours(v.substring(11,13));
+datee.setMinutes(v.substring(14,16));
+  myNodelist[i]["datee"]=datee;
+
+}
+//console.log(myNodelist);
+
+
+var myNodelist = document.getElementsByTagName("LI");
+
+// the following does not work because "items" is not
+// an array and doesn't have a sort method.  Uncomment-
+// ing this line will result in the following:
+// "Uncaught TypeError: items.sort is not a function".
+// items.sort(); 
+
+// magically coerce into an array first
+myNodelist = Array.prototype.slice.call(myNodelist);
+
+// Now we can sort it.  Sort alphabetically
+myNodelist.sort(function(a, b){
+  var c = new Date(a.datee);
+var d = new Date(b.datee);
+return c-d;
+});
+
+console.log(myNodelist);
+
+
+for(var i = 0, len = myNodelist.length; i < len; i++) {
+    // store the parent node so we can reatach the item
+    var parent = myNodelist[i].parentNode;
+    // detach it from wherever it is in the DOM
+    var detatchedItem = parent.removeChild(myNodelist[i]);
+    // reatach it.  This works because we are itterating
+    // over the items in the same order as they were re-
+    // turned from being sorted.
+    parent.appendChild(detatchedItem);
+}
+
+
+console.log(myNodelist);
+
+
+
+
+
+
+//var myNodelist = document.getElementsByTagName("LI");
+//console.log(myNodelist);
+
+/*
+
+var myNodelist = document.getElementsByTagName("LI");
+console.log(myNodelist);
+var j;
+for (j = 0; j < myNodelist.length ; i++) {
+  var v = myNodelist[j].innerHTML.substring(0,17);
+var datee = new Date();
+//2020-06-07T00:00 
+datee.setFullYear(v.substring(0,4));
+datee.setMonth(v.substring(5,7));
+datee.setDate(v.substring(8,10));
+datee.setHours(v.substring(11,13));
+datee.setMinutes(v.substring(14,16));
+  myNodelist[j]["datee"]=datee;
+}
+
+console.log(myNodelist);
+
+
+
+var v = myNodelist[0].innerHTML.substring(0,17);
+var datee = new Date();
+//2020-06-07T00:00 
+datee.setFullYear(v.substring(0,4));
+datee.setMonth(v.substring(5,7));
+datee.setDate(v.substring(8,10));
+datee.setHours(v.substring(11,13));
+datee.setMinutes(v.substring(14,16));
+console.log(datee);
+
+
+var v2 = myNodelist[1].innerHTML.substring(0,17);
+var datee2 = new Date();
+//2020-06-07T00:00 
+datee2.setFullYear(v2.substring(0,4));
+datee2.setMonth(v2.substring(5,7));
+datee2.setDate(v2.substring(8,10));
+datee2.setHours(v2.substring(11,13));
+datee2.setMinutes(v2.substring(14,16));
+console.log(datee2);
+
+
+arr = [datee,datee2]
+console.log(arr);
+arr.sort((a,b)=>a.getTime()-b.getTime());
+
+console.log(arr);
+
+
+
+*/
+
+
+
+
+
+
+
+
+
+// Click on a close button to hide the current list item
+var close = document.getElementsByClassName("close");
+var i;
+for (i = 0; i < close.length; i++) {
+  close[i].onclick = function() {
+    var div = this.parentElement;
+    div.style.display = "none";
+  }
+}
+
+// Add a "checked" symbol when clicking on a list item
+var list = document.querySelector('ul');
+list.addEventListener('click', function(ev) {
+  if (ev.target.tagName === 'LI') {
+    ev.target.classList.toggle('checked');
+  }
+}, false);
+
+// Create a new list item when clicking on the "Add" button
+function newElement() {
+  var li = document.createElement("li");
+  var inputValue = document.getElementById("myInput").value;
+  var inputdate = document.getElementById("mydate").value;
+  var dd = inputdate.slice(0,10);
+  var dd2 = inputdate.slice(11,16);
+  //inputdate.replace(/T/g, " ");
+  //console.log(dd);
+  //console.log(typeof inputdate);
+  var t = document.createTextNode(inputValue);
+  var d = document.createTextNode(inputdate);
+  //var d = document.createTextNode(dd+" "+dd2);
+  li.appendChild(d);
+  li.appendChild( document.createTextNode( '\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0' ) );
+  li.appendChild(t);
+  //console.log(li);
+  //console.log(typeof li);
+  if (inputValue === '') {
+    alert("You must write something!");
+  } else {
+    document.getElementById("myUL").appendChild(li);
+  }
+  document.getElementById("myInput").value = "";
+  document.getElementById("mydate").value = "";
+
+  var span = document.createElement("SPAN");
+  var txt = document.createTextNode("\u00D7");
+  //console.log(txt);
+  span.className = "close";
+  span.appendChild(txt);
+  li.appendChild(span);
+  //console.log(li);
+  
+  for (i = 0; i < close.length; i++) {
+    close[i].onclick = function() {
+      var div = this.parentElement;
+      div.style.display = "none";
+    }
+  }
+
+  //console.log(close);
+  //var v = close[0];  
+}
+
+
+//var myNode = document.getElementsByTagName("LI");
+  //console.log(myNode);
+</script>
+
+</body>
+<script>
+var myNode = document.getElementById("myUL");
+  console.log(myNode);  
+  console.log(typeof myNode);
+  var t = myNode;
+  console.log(t);
+
+
+</script>
+</html>
